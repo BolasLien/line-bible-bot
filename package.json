@@ -2,6 +2,9 @@
   "type": "module",
   "name": "line-bible",
   "version": "1.0.0",
+  "engines": {
+    "node":"14.0.0"
+  },
   "description": "",
   "main": "index.js",
   "scripts": {
