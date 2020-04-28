@@ -1,0 +1,17 @@
+{
+  "type": "module",
+  "name": "line-bible",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "linebot": "^1.5.3"
+  }
+}
