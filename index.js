@@ -106,14 +106,21 @@ const getData = async (str) => {
 
     msg = '搜尋「' + str + '」\n' + data[0].book + '\n'
     for (let i = 0; i < data[0].verses.length; i++) {
-      msg += data[0].verses[i].chapter + ':' + data[0].verses[i].verse + '  ' + data[0].verses[i].content + '\n'
-    }
+      let content = data[0].verses[i].content
 
-    console.log(msg)
+      // 過濾掉網頁的標籤
+      if (content.includes('<span class=\'browse-verse-red\' style=\'color: red;\'>')) {
+        let ct = content.replace('<span class=\'browse-verse-red\' style=\'color: red;\'>', '')
+        ct = ct.replace('</span>', '')
+        content = ct
+      }
+
+      msg += data[0].verses[i].chapter + ':' + data[0].verses[i].verse + '  ' + content + '\n'
+    }
   } catch (error) {
     msg = '發生錯誤' + error
   }
-
+  console.log(msg)
   return msg
 }
 
