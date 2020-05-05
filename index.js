@@ -119,8 +119,7 @@ const getData = async (str) => {
 
 bot.on('message', async (event) => {
   console.log(event.message.text)
-
-  event.reply(getData(event.message.text))
+  event.reply(await getData(event.message.text))
 })
 
 // const findChap = (str) => {
