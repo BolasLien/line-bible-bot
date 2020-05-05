@@ -19,7 +19,3 @@
 
 * 如果要搜尋 `馬可福音 第1章 第20節` => 跟機器人說 `可 1 20` <br>
 ![](./images/ans.png)
-
-
-
-預計要用cheerio去爬http://www.rccc.org/readbible/Book.htm
