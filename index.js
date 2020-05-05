@@ -15,8 +15,8 @@ const bot = linebot({
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
 })
 
-// 章節縮寫資料
-const listall = [
+// 書卷縮寫資料
+const bookList = [
   { num: '1', ens: 'Gen', en: 'Genesis', cns: '創', cn: '創世記', sens: 'Ge' },
   { num: '2', ens: 'Ex', en: 'Exodus', cns: '出', cn: '出埃及記', sens: 'Ex' },
   { num: '3', ens: 'Lev', en: 'Leviticus', cns: '利', cn: '利未記', sens: 'Le' },
@@ -85,22 +85,46 @@ const listall = [
   { num: '66', ens: 'Rev', en: 'Revelation', cns: '啟', cn: '啟示錄', sens: 'Re' }
 ]
 
-const getData = async (str) => {
+const strProcessing = (str) => {
+  // 處理特殊符號
+  if (str.includes('-')) {
+    str = str.replace('-', ':')
+  }
+
+  // 把輸入文字分割合併為[書卷,章節]
+  // const strArr = str.split('')
+  // for (const t of strArr) {
+  //   const re = /\d/
+  //   console.log(t + ' ' + /\D/.test(t))
+  // }
+
+  // console.log(strArr)
+
+  // 以下是機器人用的
   const s = str.split(' ')
 
+  // 處理書卷編號 : 輸出內容是1~66
   let bookNum = ''
-  for (let i = 0; i < listall.length; i++) {
-    if (listall[i].cn.includes(s[0]) || listall[i].cns.includes(s[0])) {
-      bookNum = listall[i].num
+  for (let i = 0; i < bookList.length; i++) {
+    if (bookList[i].cn.includes(s[0]) || bookList[i].cns.includes(s[0])) {
+      bookNum = bookList[i].num
       break
     }
   }
 
+  // 處理章節編號 : 輸出 1 或 1:1
   const chapNum = s[1]
+
+  const result = bookNum + ':' + chapNum
+  console.log(result)
+  return result
+}
+
+const getData = async (str) => {
   let msg = ''
   try {
     const data = await rp({
-      uri: `https://bibletool.konline.org/retrieve/UCV:${bookNum}:${chapNum}`,
+      uri: `https://bibletool.konline.org/retrieve/UCV:${strProcessing(str)}`,
       json: true
     })
 
@@ -118,7 +142,13 @@ const getData = async (str) => {
       msg += data[0].verses[i].chapter + ':' + data[0].verses[i].verse + '  ' + content + '\n'
     }
   } catch (error) {
-    msg = '發生錯誤' + error
+    msg = '發生錯誤 ' + error
+
+    // if (error.type = 'Cannot read property \'book\' of undefined') {
+    //   msg = '輸入的內容有問題'
+    // }
+
+    // if (error.type = '')
   }
   console.log(msg)
   return msg
@@ -128,40 +158,6 @@ bot.on('message', async (event) => {
   console.log(event.message.text)
   event.reply(await getData(event.message.text))
 })
-
-// const findChap = (str) => {
-//   const s = str.split(' ')
-//   console.log(s)
-
-//   const json = {
-//     chineses: s[0],
-//     chap: s[1],
-//     version: 'nstrunv',
-//     sec: s.length === 3 ? s[2] : 0,
-//     gb: 0
-//   }
-
-//   console.log(json)
-//   return json
-// }
-
-// // 當收到訊息時
-// bot.on('message', async (event) => {
-//   console.log(event.message.text)
-
-//   let msg = ''
-//   try {
-//     const data = await rp({
-//       uri: 'https://bible.fhl.net/json/qb.php',
-//       qs: findChap(event.message.text),
-//       json: true
-//     })
-//     msg = data.record[0].bible_text
-//   } catch (error) {
-//     msg = '發生錯誤' + error
-//   }
-//   event.reply(msg)
-// })
 
 // 在 port 啟動
 bot.listen('/', process.env.PORT, () => {
