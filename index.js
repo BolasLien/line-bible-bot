@@ -86,37 +86,40 @@ const bookList = [
 ]
 
 const strProcessing = (str) => {
-  // 處理特殊符號
-  if (str.includes('-')) {
-    str = str.replace('-', ':')
+  // 把輸入的文字拆成一個 Array
+  const strArr = str.split('')
+
+  // 把 strArr 分類為 中文字串 及 非中文字串
+  let chineseStr = ''
+  let otherStr = ''
+  for (let i = 0; i < strArr.length; i++) {
+    if (/[\u4e00-\u9fa5]/.test(strArr[i])) {
+      chineseStr += strArr[i]
+    } else {
+      otherStr += strArr[i]
+    }
   }
 
-  // 把輸入文字分割合併為[書卷,章節]
-  // const strArr = str.split('')
-  // for (const t of strArr) {
-  //   const re = /\d/
-  //   console.log(t + ' ' + /\D/.test(t))
-  // }
-
-  // console.log(strArr)
-
-  // 以下是機器人用的
-  const s = str.split(' ')
-
-  // 處理書卷編號 : 輸出內容是1~66
-  let bookNum = ''
+  // 利用 chineseStr 處理書卷編號 => 輸出內容是1~66
   for (let i = 0; i < bookList.length; i++) {
-    if (bookList[i].cn.includes(s[0]) || bookList[i].cns.includes(s[0])) {
-      bookNum = bookList[i].num
+    if (bookList[i].cn.includes(chineseStr) || bookList[i].cns.includes(chineseStr)) {
+      chineseStr = bookList[i].num
       break
     }
   }
 
-  // 處理章節編號 : 輸出 1 或 1:1
-  const chapNum = s[1]
+  // 利用 otherStr 處理章節編號 => 輸出 :1 或 :1:1
 
-  const result = bookNum + ':' + chapNum
-  console.log(result)
+  // 把不是數字的 String 當作切割點，切割成 Array
+  let temp = otherStr.split(/[^0-9]/)
+
+  // 找到是數字的元素，元素前面加':'，並且合併 Array 為 String
+  temp = temp.map((e) => {
+    return e.replace(/[0-9]+/, ':' + e)
+  })
+  otherStr = temp.join('')
+
+  const result = chineseStr + otherStr
   return result
 }
 
@@ -154,6 +157,7 @@ const getData = async (str) => {
   return msg
 }
 
+// 機器人收到訊息
 bot.on('message', async (event) => {
   console.log(event.message.text)
   event.reply(await getData(event.message.text))
