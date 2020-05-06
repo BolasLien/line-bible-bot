@@ -100,7 +100,7 @@ const strProcessing = (str) => {
     }
   }
 
-  // 利用 chineseStr 處理書卷編號 => 輸出內容是1~66
+  /* 利用 chineseStr 處理書卷編號 => 輸出內容是1~66 */
   for (let i = 0; i < bookList.length; i++) {
     if (bookList[i].cn.includes(chineseStr) || bookList[i].cns.includes(chineseStr)) {
       chineseStr = bookList[i].num
@@ -108,7 +108,7 @@ const strProcessing = (str) => {
     }
   }
 
-  // 利用 otherStr 處理章節編號 => 輸出 :1 或 :1:1
+  /* 利用 otherStr 處理章節編號 => 輸出 :1 或 :1:1 */
 
   // 把不是數字的 String 當作切割點，切割成 Array
   let temp = otherStr.split(/[^0-9]/)
@@ -123,44 +123,47 @@ const strProcessing = (str) => {
   return result
 }
 
-const getData = async (str) => {
+const checkResponse = (data) => {
+  if (data[0].verses.length <= 0) {
+    throw new Error('沒有這個章節喔!')
+  } else if (data[0].book == null) {
+    throw new Error('沒有這個書卷喔')
+  }
+}
+
+const searchBible = async (str) => {
   let msg = ''
   try {
     const data = await rp({
       uri: `https://bibletool.konline.org/retrieve/UCV:${strProcessing(str)}`,
       json: true
     })
+    checkResponse(data)
 
     msg = '搜尋「' + str + '」\n' + data[0].book + '\n'
     for (let i = 0; i < data[0].verses.length; i++) {
       let content = data[0].verses[i].content
 
       // 過濾掉網頁的標籤
-      if (content.includes('<span class=\'browse-verse-red\' style=\'color: red;\'>')) {
-        let ct = content.replace('<span class=\'browse-verse-red\' style=\'color: red;\'>', '')
-        ct = ct.replace('</span>', '')
-        content = ct
-      }
+      content = content.replace(/<[^>]+>/g, '')
 
       msg += data[0].verses[i].chapter + ':' + data[0].verses[i].verse + '  ' + content + '\n'
     }
   } catch (error) {
-    msg = '發生錯誤 ' + error
+    msg = error.message
 
-    // if (error.type = 'Cannot read property \'book\' of undefined') {
-    //   msg = '輸入的內容有問題'
-    // }
-
-    // if (error.type = '')
+    if (error.message.includes('ERR_UNESCAPED_CHARACTERS')) {
+      msg = '輸入的內容有問題'
+    }
   }
-  console.log(msg)
+
   return msg
 }
 
 // 機器人收到訊息
 bot.on('message', async (event) => {
   console.log(event.message.text)
-  event.reply(await getData(event.message.text))
+  event.reply(await searchBible(event.message.text))
 })
 
 // 在 port 啟動
