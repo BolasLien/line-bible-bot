@@ -18,4 +18,4 @@
 [查詢章節縮寫](http://springbible.fhl.net/Bible2/cgic201/Doc/abbreviation.html)
 
 * 如果要搜尋 `馬可福音 第1章 第20節` => 跟機器人說 `可1:20` 或 `馬可 1 20`<br>
-![](./images/ans.jpg)
+![](./images/ans.png)
