@@ -14,6 +14,10 @@
 或是掃描QR Code <br>
 ![](./images/QRcode.png)
 
+或是點選這個網址[加入好友](https://lin.ee/2JOSM8n0V)
+
+或是這個按鈕<a href="https://lin.ee/2JOSM8n0V"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0"></a>
+
 * 搜尋章節的格式 `章節縮寫 第幾章 第幾節` <br>
 [查詢章節縮寫](http://springbible.fhl.net/Bible2/cgic201/Doc/abbreviation.html)
 
