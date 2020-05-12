@@ -117,28 +117,40 @@ const strProcessing = (str) => {
   temp = temp.map((e) => {
     return e.replace(/[0-9]+/, ':' + e)
   })
+
   otherStr = temp.join('')
 
-  const result = chineseStr + otherStr
+  let result = chineseStr + otherStr
+  result = result.split(':')
   return result
 }
 
-const checkResponse = (data) => {
-  if (data[0].verses.length <= 0) {
-    throw new Error('沒有這個章節喔!')
-  } else if (data[0].book == null) {
-    throw new Error('沒有這個書卷喔')
-  }
-}
-
 const searchBible = async (str) => {
+  // 把關鍵字進行處理
+  const strArr = strProcessing(str)
+
   let msg = ''
   try {
     const data = await rp({
-      uri: `https://bibletool.konline.org/retrieve/UCV:${strProcessing(str)}`,
+      uri: `https://bibletool.konline.org/retrieve/UCV:${strArr[0] + ':' + strArr[1]}`,
       json: true
     })
-    checkResponse(data)
+
+    // 當data裡面沒有包含章節資料時
+    if (data[0].verses.length <= 0) {
+      throw new Error('沒有這個章節喔!')
+    } else if (data[0].book == null) {
+      throw new Error('沒有這個書卷喔')
+    }
+
+    // 範圍搜尋
+    if (strArr.length === 3) {
+      // 單個
+      data[0].verses = data[0].verses.filter(item => (item.verse === strArr[2]))
+    } else if (strArr.length >= 4) {
+      // 範圍
+      data[0].verses = data[0].verses.filter(item => (item.verse >= parseInt(strArr[2]) && item.verse <= parseInt(strArr[3])))
+    }
 
     msg = '搜尋「' + str + '」\n' + data[0].book + '\n'
     for (let i = 0; i < data[0].verses.length; i++) {
