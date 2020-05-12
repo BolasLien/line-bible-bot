@@ -12,7 +12,7 @@
 * 開啟Line的加入好友功能，搜尋 @679zbztn
 
 或是掃描QR Code <br>
-![](https://qr-official.line.me/sid/M/679zbztn.png)
+![](./images/QR.png)
 
 或是點選這個網址[加入好友](https://lin.ee/2JOSM8n0V)
 
