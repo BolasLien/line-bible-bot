@@ -1,5 +1,5 @@
 <h1 align=center>拜啵
-<h5 align=center>Line經文查詢機器人
+<h5 align=center>聖經經文查詢Line機器人
 
 <h2> 資料來源</h2>
 耶大雅中文聖經工具程式 http://bibletool.konline.org/
@@ -19,3 +19,7 @@
 
 * 如果要搜尋 `馬可福音 第1章 第20節` => 跟機器人說 `可1:20` 或 `馬可 1 20`<br>
 ![](./images/ans.png)
+
+* 可以範圍搜尋了! => 跟機器人說 `可 1 21 27` 或 `馬可 1 21~27`<br>
+![](./images/range.png)
+
