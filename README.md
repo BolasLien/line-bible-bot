@@ -1,5 +1,8 @@
+<div align="center">
+<img src="./images/book.png" width="128">
 <h1 align=center>拜啵
 <h5 align=center>聖經經文查詢Line機器人
+</div>
 
 <h2> 資料來源</h2>
 耶大雅中文聖經工具程式 http://bibletool.konline.org/
